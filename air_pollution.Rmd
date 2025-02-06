@@ -47,8 +47,10 @@ df1 = merge(summary, longer)
 df2 = mutate(df1, lrgr_avg = ifelse(pct > avg_pct, T, F)) %>%
   filter(lrgr_avg)
 
-df3 = group_by(df1, group_pop, year) %>%
+df3 = group_by(df2, group_pop, year) %>%
   summarize(avg_pm25 = weighted.mean(pm25, pop))
+
+df_all_avg = summarize(df2, avg_pm25 = weighted.mean(pm25, pop))
 ```
 
 ```{r}
@@ -64,7 +66,9 @@ ggplot(df3, aes(x = year, y = avg_pm25, color = group_pop, alpha = 0.1)) +
   annotate("text",x = 2016.3, y = filter(df3, group_pop == "white_pop", year == "2016")[[3]], label="White") +
   annotate("text",x = 2016.3, y = filter(df3, group_pop == "native_pop", year == "2016")[[3]], label="Native") +
   annotate("text",x = 2016.3, y = filter(df3, group_pop == "hisp_pop", year == "2016")[[3]]+0.2, label="Hispanic") +
-  scale_x_continuous(breaks=c(2008, 2010, 2012, 2014, 2016))
+  scale_x_continuous(breaks=c(2008, 2010, 2012, 2014, 2016))# +
+  #ylim(c(6,14)) +
+  #scale_y_continuous(breaks = c(7:13))
 ```
 
 
