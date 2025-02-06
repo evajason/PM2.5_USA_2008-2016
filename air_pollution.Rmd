@@ -1,6 +1,6 @@
 ---
-title: "class 4"
-author: "Eva Jason"
+title: "Lab 4"
+author: "Eva Jason, Tannavee Kumar, Lizzy Mikita"
 date: "`r Sys.Date()`"
 output: pdf_document
 ---
@@ -10,11 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(ggplot2)
 library(tidyr)
+library(readr)
 ```
 
 
-```{r}
-library(readr)
+```{r, warning=F}
 df1 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part1.csv")
 df2 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part2.csv")
 df3 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part3.csv")
@@ -26,16 +26,19 @@ df_all = do.call(rbind, list(df1, df2,df3, df4,df5)) %>%
 ```
 
 ```{r}
-longer = select(df_all, year, zcta, pct_blk, pct_hisp, pct_native, pct_asian, pct_white, black_pop, hisp_pop, native_pop, asian_pop, white_pop, pm25) %>%
+longer = select(df_all, year, zcta, pct_blk, pct_hisp, pct_native, pct_asian, 
+                pct_white, black_pop, hisp_pop, native_pop, asian_pop, 
+                white_pop, pm25) %>%
   drop_na() %>%
-  pivot_longer(-c(zcta, year, pm25,black_pop, hisp_pop, native_pop, asian_pop, white_pop), names_to = "group_pct", values_to = "pct") %>%
-  pivot_longer(-c(zcta, year, pm25, group_pct, pct), names_to = "group_pop", values_to = "pop") 
+  pivot_longer(-c(zcta, year, pm25,black_pop, hisp_pop, native_pop, asian_pop, 
+                  white_pop), names_to = "group_pct", values_to = "pct") %>%
+  pivot_longer(-c(zcta, year, pm25, group_pct, pct), names_to = "group_pop", 
+               values_to = "pop") 
 ```
 
 ```{r}
 summary = group_by(longer, group_pop, year) %>%
   summarize(avg_pct = weighted.mean(pct, pop))
-  #summarize(avg_pm25 = weighted.mean(pm25, pop))
 ```
 
 ```{r}
@@ -49,10 +52,10 @@ df3 = group_by(df1, group_pop, year) %>%
 ```
 
 ```{r}
-ggplot(df3, aes(x = year, y = avg_pm25, color = group_pop, alpha = 0.3)) +
-  geom_line(linewidth=1) +
+ggplot(df3, aes(x = year, y = avg_pm25, color = group_pop, alpha = 0.1)) +
+  geom_line(linewidth=1.2) +
   theme_minimal() +
-  ggtitle("PM 2.5 During the Obama Admnistration") +
+  ggtitle("PM 2.5 for different communities during the Obama Administration") +
   xlab(NULL) +
   ylab(NULL) + 
   theme(legend.position="none") +
@@ -62,36 +65,6 @@ ggplot(df3, aes(x = year, y = avg_pm25, color = group_pop, alpha = 0.3)) +
   annotate("text",x = 2016.3, y = filter(df3, group_pop == "native_pop", year == "2016")[[3]], label="Native") +
   annotate("text",x = 2016.3, y = filter(df3, group_pop == "hisp_pop", year == "2016")[[3]]+0.2, label="Hispanic") +
   scale_x_continuous(breaks=c(2008, 2010, 2012, 2014, 2016))
-```
-
-## Unweighted
-
-```{r}
-df_all_2008 = filter(df_all, year==2008)
-avg_pct_blk = mean(df_all_2008$pct_blk, na.rm = T)
-avg_pct_white = mean(df_all_2008$pct_white, na.rm = T)
-avg_pct_hisp = mean(df_all_2008$pct_hisp, na.rm = T)
-avg_pct_native = mean(df_all_2008$pct_native, na.rm = T)
-avg_pct_asian = mean(df_all_2008$pct_asian, na.rm = T)
-
-df_all_long = drop_na(df_all) %>%
-  mutate(blk_abv_avg = ifelse(pct_blk > avg_pct_blk, T, F)) %>%
-                mutate(white_abv_avg = ifelse(pct_white > avg_pct_white, T, F)) %>%
-                mutate(hisp_abv_avg = ifelse(pct_hisp > avg_pct_hisp, T, F)) %>%
-                mutate(asian_abv_avg = ifelse(pct_asian > avg_pct_asian, T, F)) %>%
-  select(year, zcta, pm25, blk_abv_avg, white_abv_avg, hisp_abv_avg, asian_abv_avg) %>%
-  pivot_longer(-c(zcta, pm25, year)) %>%
-  #drop_na() %>%
-  filter(value) %>%
-  group_by(name, year) %>%
-  summarize(mean = mean(pm25))
-```
-
-```{r}
-ggplot(df_all_long, aes(x = year, y = mean, color = name)) +
-  geom_line() +
-  theme_minimal()
-  
 ```
 
 
