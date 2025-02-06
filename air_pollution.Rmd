@@ -21,7 +21,8 @@ df3 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparit
 df4 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part4.csv")
 df5 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part5.csv")
 
-df_all = do.call(rbind, list(df1, df2,df3, df4,df5))
+df_all = do.call(rbind, list(df1, df2,df3, df4,df5)) %>%
+  filter(year >=2008)
 ```
 
 ```{r}
@@ -50,9 +51,14 @@ df3 = group_by(df1, group_pop, year) %>%
 ```{r}
 ggplot(df3, aes(x = year, y = avg_pm25, color = group_pop)) +
   geom_line() +
-  theme_minimal()
+  theme_minimal() +
+  ggtitle("PM 2.5 During the Obama Admnistration") +
+  xlab(NULL) +
+  ylab(NULL)
+  
 ```
 
+## Unweighted
 
 ```{r}
 df_all_2008 = filter(df_all, year==2008)
@@ -78,7 +84,7 @@ df_all_long = drop_na(df_all) %>%
 ```{r}
 ggplot(df_all_long, aes(x = year, y = mean, color = name)) +
   geom_line() +
-  theme_minimal() +
+  theme_minimal()
   
 ```
 
