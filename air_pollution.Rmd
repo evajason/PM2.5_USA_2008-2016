@@ -1,0 +1,67 @@
+---
+title: "class 4"
+author: "Eva Jason"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+```
+
+
+```{r}
+library(readr)
+df1 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part1.csv")
+df2 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part2.csv")
+df3 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part3.csv")
+df4 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part4.csv")
+df5 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part5.csv")
+
+df_all = do.call(rbind, list(df1, df2,df3, df4,df5))
+```
+
+```{r}
+df_all_2008 = filter(df_all, year==2008)
+avg_pct_blk = mean(df_all_2008$pct_blk, na.rm = T)
+avg_pct_white = mean(df_all_2008$pct_white, na.rm = T)
+avg_pct_hisp = mean(df_all_2008$pct_hisp, na.rm = T)
+avg_pct_native = mean(df_all_2008$pct_native, na.rm = T)
+avg_pct_asian = mean(df_all_2008$pct_asian, na.rm = T)
+
+df_all_long = drop_na(df_all) %>%
+  mutate(blk_abv_avg = ifelse(pct_blk > avg_pct_blk, T, F)) %>%
+                mutate(white_abv_avg = ifelse(pct_white > avg_pct_white, T, F)) %>%
+                mutate(hisp_abv_avg = ifelse(pct_hisp > avg_pct_hisp, T, F)) %>%
+                mutate(asian_abv_avg = ifelse(pct_asian > avg_pct_asian, T, F)) %>%
+  select(year, zcta, pm25, blk_abv_avg, white_abv_avg, hisp_abv_avg, asian_abv_avg) %>%
+  pivot_longer(-c(zcta, pm25, year)) %>%
+  #drop_na() %>%
+  filter(value) %>%
+  group_by(name, year) %>%
+  summarize(mean = mean(pm25))
+```
+
+```{r}
+ggplot(df_all_long, aes(x = year, y = mean, color = name)) +
+  geom_line() +
+  theme_minimal()
+```
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```
+
+
+
+
