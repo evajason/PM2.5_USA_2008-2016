@@ -49,13 +49,19 @@ df3 = group_by(df1, group_pop, year) %>%
 ```
 
 ```{r}
-ggplot(df3, aes(x = year, y = avg_pm25, color = group_pop)) +
-  geom_line() +
+ggplot(df3, aes(x = year, y = avg_pm25, color = group_pop, alpha = 0.3)) +
+  geom_line(linewidth=1) +
   theme_minimal() +
   ggtitle("PM 2.5 During the Obama Admnistration") +
   xlab(NULL) +
-  ylab(NULL)
-  
+  ylab(NULL) + 
+  theme(legend.position="none") +
+  annotate("text",x = 2016.2, y = filter(df3, group_pop == "asian_pop", year == "2016")[[3]]-.1, label="Asian") +
+  annotate("text",x = 2016.3, y = filter(df3, group_pop == "black_pop", year == "2016")[[3]]-.1, label="Black") +
+  annotate("text",x = 2016.3, y = filter(df3, group_pop == "white_pop", year == "2016")[[3]], label="White") +
+  annotate("text",x = 2016.3, y = filter(df3, group_pop == "native_pop", year == "2016")[[3]], label="Native") +
+  annotate("text",x = 2016.3, y = filter(df3, group_pop == "hisp_pop", year == "2016")[[3]]+0.2, label="Hispanic") +
+  scale_x_continuous(breaks=c(2008, 2010, 2012, 2014, 2016))
 ```
 
 ## Unweighted
