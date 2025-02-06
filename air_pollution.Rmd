@@ -15,11 +15,11 @@ library(readr)
 
 
 ```{r, warning=F}
-df1 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part1.csv")
-df2 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part2.csv")
-df3 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part3.csv")
-df4 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part4.csv")
-df5 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part5.csv")
+df1 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part1.csv",show_col_types = FALSE)
+df2 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part2.csv",show_col_types = FALSE)
+df3 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part3.csv",show_col_types = FALSE)
+df4 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part4.csv",show_col_types = FALSE)
+df5 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part5.csv",show_col_types = FALSE)
 
 df_all = do.call(rbind, list(df1, df2,df3, df4,df5)) %>%
   filter(year >=2008)
