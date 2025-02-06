@@ -50,7 +50,11 @@ df2 = mutate(df1, lrgr_avg = ifelse(pct > avg_pct, T, F)) %>%
 df3 = group_by(df2, group_pop, year) %>%
   summarize(avg_pm25 = weighted.mean(pm25, pop))
 
-df_all_avg = summarize(df2, avg_pm25 = weighted.mean(pm25, pop))
+df_all_avg = group_by(df2, year) %>%
+  summarize(avg_pm25 = weighted.mean(pm25, pop)) %>%
+  mutate(group_pop = "all")
+
+df3 = rbind(df3, df_all_avg)
 ```
 
 ```{r}
@@ -61,11 +65,12 @@ ggplot(df3, aes(x = year, y = avg_pm25, color = group_pop, alpha = 0.1)) +
   xlab(NULL) +
   ylab(NULL) + 
   theme(legend.position="none") +
-  annotate("text",x = 2016.2, y = filter(df3, group_pop == "asian_pop", year == "2016")[[3]]-.1, label="Asian") +
-  annotate("text",x = 2016.3, y = filter(df3, group_pop == "black_pop", year == "2016")[[3]]-.1, label="Black") +
+  annotate("text",x = 2016.3, y = filter(df3, group_pop == "asian_pop", year == "2016")[[3]]-.2, label="Asian") +
+  annotate("text",x = 2016.3, y = filter(df3, group_pop == "black_pop", year == "2016")[[3]], label="Black") +
   annotate("text",x = 2016.3, y = filter(df3, group_pop == "white_pop", year == "2016")[[3]], label="White") +
   annotate("text",x = 2016.3, y = filter(df3, group_pop == "native_pop", year == "2016")[[3]], label="Native") +
-  annotate("text",x = 2016.3, y = filter(df3, group_pop == "hisp_pop", year == "2016")[[3]]+0.2, label="Hispanic") +
+  annotate("text",x = 2016.4, y = filter(df3, group_pop == "hisp_pop", year == "2016")[[3]]+0.25, label="Hispanic") +
+  annotate("text",x = 2016.1, y = filter(df3, group_pop == "all", year == "2016")[[3]], label="All") +
   scale_x_continuous(breaks=c(2008, 2010, 2012, 2014, 2016))# +
   #ylim(c(6,14)) +
   #scale_y_continuous(breaks = c(7:13))
