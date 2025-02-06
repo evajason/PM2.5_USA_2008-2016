@@ -25,6 +25,36 @@ df_all = do.call(rbind, list(df1, df2,df3, df4,df5))
 ```
 
 ```{r}
+longer = select(df_all, year, zcta, pct_blk, pct_hisp, pct_native, pct_asian, pct_white, black_pop, hisp_pop, native_pop, asian_pop, white_pop, pm25) %>%
+  drop_na() %>%
+  pivot_longer(-c(zcta, year, pm25,black_pop, hisp_pop, native_pop, asian_pop, white_pop), names_to = "group_pct", values_to = "pct") %>%
+  pivot_longer(-c(zcta, year, pm25, group_pct, pct), names_to = "group_pop", values_to = "pop") 
+```
+
+```{r}
+summary = group_by(longer, group_pop, year) %>%
+  summarize(avg_pct = weighted.mean(pct, pop))
+  #summarize(avg_pm25 = weighted.mean(pm25, pop))
+```
+
+```{r}
+df1 = merge(summary, longer)
+
+df2 = mutate(df1, lrgr_avg = ifelse(pct > avg_pct, T, F)) %>%
+  filter(lrgr_avg)
+
+df3 = group_by(df1, group_pop, year) %>%
+  summarize(avg_pm25 = weighted.mean(pm25, pop))
+```
+
+```{r}
+ggplot(df3, aes(x = year, y = avg_pm25, color = group_pop)) +
+  geom_line() +
+  theme_minimal()
+```
+
+
+```{r}
 df_all_2008 = filter(df_all, year==2008)
 avg_pct_blk = mean(df_all_2008$pct_blk, na.rm = T)
 avg_pct_white = mean(df_all_2008$pct_white, na.rm = T)
@@ -48,18 +78,8 @@ df_all_long = drop_na(df_all) %>%
 ```{r}
 ggplot(df_all_long, aes(x = year, y = mean, color = name)) +
   geom_line() +
-  theme_minimal()
-```
-
-
-```{r}
-
-```
-
-
-
-```{r}
-
+  theme_minimal() +
+  
 ```
 
 
