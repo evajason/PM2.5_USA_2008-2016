@@ -15,13 +15,10 @@ library(readr)
 
 
 ```{r, message=F}
-df1 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part1.csv")
-df2 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part2.csv")
-df3 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part3.csv")
-df4 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part4.csv")
-df5 = read_csv("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_disparity/refs/heads/main/data/data_part5.csv")
-
-df_all = do.call(rbind, list(df1, df2, df3, df4, df5)) %>%
+df_all = paste0("https://raw.githubusercontent.com/xiaodan-zhou/pm25_and_",
+                "disparity/refs/heads/main/data/data_part", c(1:5),".csv")
+df_all = lapply(df_all,read_csv)
+df_all = do.call(rbind, df_all) %>%
   filter(year >=2008)
 ```
 
