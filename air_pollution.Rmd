@@ -59,8 +59,8 @@ df_all_avg = group_by(df2, year) %>%
 
 ```{r}
 ggplot() +
-  geom_line(df3, mapping = aes(x = year, y = avg_pm25, color = group_pop, alpha = 0.1), linewidth=1) +
-  geom_line(df_all_avg, mapping = aes(x = year, y = avg_pm25), linewidth=1.1) +
+  geom_line(df3, mapping = aes(x = year, y = avg_pm25, color = group_pop, alpha = 0.05), linewidth=1) +
+  geom_line(df_all_avg, mapping = aes(x = year, y = avg_pm25), linewidth=1.1,alpha = 0.6) +
   theme_minimal() +
   ggtitle("PM 2.5 for different communities during the Obama Administration") +
   xlab(NULL) +
@@ -72,10 +72,10 @@ ggplot() +
   annotate("text",x = 2016.3, y = filter(df3, group_pop == "native_pop", year == "2016")[[3]], label="Native") +
   annotate("text",x = 2016.4, y = filter(df3, group_pop == "hisp_pop", year == "2016")[[3]]+0.25, label="Hispanic") +
   annotate("text",x = 2016.1, y = filter(df_all_avg, year == "2016")[[2]], label="All") +
-  scale_x_continuous(breaks=c(2008, 2010, 2012, 2014, 2016))# +
-  #ylim(c(6,14)) +
-  #scale_y_continuous(breaks = c(7:13))
+  scale_x_continuous(breaks=c(2008, 2010, 2012, 2014, 2016))
 ```
+
+First, we calculated the average percent makeup of each race listed in the zipcodes for all the zip codes. Each trendline depicts the weighted average of zip codes that had percentages larger than the average of the respective race noted. In the above figure, we can see over the 8 years of the Obama Administration, PM 2.5 has a general decrease for all Americans (depicted in the black trend line). This was calculated using a weighted population average for all zip codes in the database. However, we can also see that PM 2.5 levels did not start at the same level for each race majority. Zip codes that had an over-representation of Hispanics started the highest, and zip codes with an over-representation of Native Americans at the lowest levels. The order of each group remains the same, however, it is notable that the space between the lines in 2016 is less than the beginning of the administration in 2008.  For example, we can see that in 2008 the PM 2.5 for Hispanic communities was a bit over 12 while it was 11.5 for Asian communities.  In 2016 these values shrunk down to close to 9 for both groups. We can also see that all groups are closer to the “All” category. This tells us that the discrepancies are less because they have shrunk toward the mean and there is a marked reduction in environmental inequality between racial groups. 
 
 ```{r}
 df_all_avg = group_by(df2, year) %>%
